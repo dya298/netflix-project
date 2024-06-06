@@ -1,0 +1,23 @@
+.banner {
+  .banner-img {
+    position: absolute;
+    width: 84.35%;
+    height: 55%;
+  }
+}
+
+swiper-container {
+  width: 100%;
+}
+
+swiper-slide {
+  background-position: center;
+  background-size: cover;
+  width: 200px;
+  height: 200px;
+}
+
+swiper-slide img {
+  display: block;
+  width: 100%;
+}

@@ -1,0 +1,33 @@
+@if (movie) {
+<div class="mt-4">
+  <img
+    *ngIf="isDisplayImage"
+    (click)="onClickMovie(movie.id)"
+    class="rounded-xl hover:cursor-pointer"
+    [src]="tmdbConfig.imagePath + movie.poster_path"
+    alt="movie image"
+  />
+  @if(movie.original_title.length > enumTitleOriginal && !isDisplayImage) {
+  <p class="text-white font-semibold mb-2 font-mono">
+    {{ movie.original_title.substring(0, enumTitleOriginal) }}...
+  </p>
+  } @else{
+  <p class="text-white font-semibold mb-2 font-mono">
+    {{ movie.original_title }}
+  </p>
+  }
+  <div class="w-full">
+    <p class="text-slate-400 text-sm font-mono font-semibold float-left">
+      {{ movie.release_date }}
+    </p>
+    <div class="flex float-right">
+      <mat-icon class="text-sm text-yellow-300" fontIcon="star"></mat-icon>
+      <p class="text-sm text-white font-mono font-semibold">
+        {{ movie.vote_average }}.0
+      </p>
+    </div>
+  </div>
+</div>
+} @else {
+<h4>Loading...</h4>
+}

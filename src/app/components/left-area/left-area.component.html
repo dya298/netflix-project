@@ -1,0 +1,17 @@
+<div class="fixed mt-16 overflow-y-auto h-full w-[230px]">
+  <p
+    class="text-2xl font-semibold font-mono text-center text-white tracking-wide"
+  >
+    Genre
+  </p>
+  @for (genre of listGenres; track $index;) {
+  <button
+    (click)="onClickGenre(genre.id)"
+    class="text-lg font-semibold font-mono text-slate-500 tracking-wide hover:text-slate-200 flex p-4"
+  >
+    {{ genre.name }}
+  </button>
+  } @empty{
+  <h4>Loading...</h4>
+  }
+</div>

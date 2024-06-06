@@ -1,0 +1,20 @@
+<p class="text-5xl font-semibold text-white tracking-wide">
+  All {{ labelGenre }} Movies
+</p>
+<div *ngIf="isFirstLoad" class="spinner-container">
+  <span class="spinner"></span>
+</div>
+<ng-container *ngIf="!isFirstLoad">
+  <div class="grid">
+    <app-movie-card
+      *ngFor="let movie of movies; index as i"
+      [isDisplayImage]="isDisplayImage"
+      [index]="i"
+      [movie]="movie"
+    >
+    </app-movie-card>
+  </div>
+  <div *ngIf="isLoading" class="spinner-container">
+    <span class="spinner"></span>
+  </div>
+</ng-container>

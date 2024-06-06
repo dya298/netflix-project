@@ -1,0 +1,147 @@
+<div *ngIf="isFinishLoad" class="spinner-container">
+  <span class="spinner"></span>
+</div>
+<div *ngIf="!isFinishLoad">
+  <div *ngIf="movie" class="w-full h-full max-h-full inline-block">
+    <div class="opacity-25">
+      @if(!movie.backdrop_path) {
+      <img
+        class="w-full h-full block rounded-3xl opacity-img"
+        [src]="tmdbConfig.bg_path + '/nz51oc6hnGrMGrYUE0s25FWgVWe.jpg'"
+      />
+      } @else {
+      <img
+        class="w-full h-full block rounded-3xl opacity-img"
+        [src]="tmdbConfig.bg_path + movie.backdrop_path"
+      />
+      }
+    </div>
+
+    <div class="absolute flex flex-col pl-[4rem] top-20 z-[9998] w-5/6">
+      <div class="grid grid-cols-8 w-full">
+        <div class="col-start-1 col-end-3 w-full">
+          <img
+            class="bg-cover w-[350px] h-[450px] rounded-lg"
+            [src]="tmdbConfig.imagePath + movie.poster_path"
+          />
+        </div>
+        <div class="col-start-3 col-end-9 mt-14">
+          <div class="w-4/6">
+            <p class="text-6xl font-semibold text-white tracking-wide">
+              {{ movie.original_title }}
+            </p>
+          </div>
+          <div class="flex">
+            <mat-icon
+              class="text-lg text-yellow-300"
+              fontIcon="star"
+            ></mat-icon>
+            <p class="text-lg text-slate-400 font-mono font-semibold">
+              {{ movie.vote_average }}.0 - {{ movie.runtime }}m -
+              {{ movie.release_date }}
+            </p>
+          </div>
+          <div class="flex mt-3">
+            <p
+              *ngFor="let item of movie.genres; index as i"
+              class="text-lg text-slate-400 font-mono font-semibold pr-5"
+            >
+              {{ item.name! }}
+            </p>
+          </div>
+          <div class="mt-3 w-5/6">
+            <p class="text-lg text-slate-100 font-mono font-semibold">
+              {{ movie.overview }}
+            </p>
+          </div>
+          <div class="mt-3 flex w-4/6">
+            <p class="text-lg text-slate-400 font-mono font-semibold">
+              Starting
+            </p>
+            <p
+              *ngIf="totalCast.length > 1"
+              class="text-lg text-slate-100 font-mono font-semibold pl-20"
+            >
+              {{ totalCast }}
+            </p>
+          </div>
+          <div class="mt-3 flex w-4/6">
+            <p class="text-lg text-slate-400 font-mono font-semibold">
+              Directed by
+            </p>
+            <p
+              *ngIf="crew"
+              class="text-lg text-slate-100 font-mono font-semibold pl-12"
+            >
+              {{ crew.name }}
+            </p>
+          </div>
+          <div class="mt-3">
+            <p class="text-lg text-slate-400 font-mono font-semibold">
+              Trailers and clips
+            </p>
+          </div>
+          <div class="mt-3 w-5/6 flex">
+            <swiper-container
+              navigation="true"
+              mousewheel="true"
+              slides-per-view="2"
+              space-between="10"
+              free-mode="true"
+              observer="true"
+              observe-parents="true"
+            >
+              @for (url of listUrlYoutube; track $index) {
+              <swiper-slide>
+                <iframe
+                  class="rounded-3xl"
+                  height="300"
+                  width="600"
+                  [frameBorder]="0"
+                  allowfullscreen
+                  [src]="url"
+                ></iframe>
+              </swiper-slide>
+
+              } @empty {
+              <h4>Loading...</h4>
+              }
+            </swiper-container>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="relative mt-[32rem]">
+      <p class="text-white font-semibold mb-2 text-3xl font-mono tracking-wide">
+        The movies have similar
+      </p>
+      <div>
+        <swiper-container
+          navigation="true"
+          mousewheel="true"
+          slides-per-view="7"
+          space-between="0"
+          free-mode="true"
+          observer="true"
+          observe-parents="true"
+        >
+          @for (movie of similarMovies; track $index) {
+          <swiper-slide>
+            <div class="relative pt-4 pl-3 pr-3">
+              <img
+                (click)="onClickMovie(movie.id)"
+                class="rounded-3xl hover:cursor-pointer hover:-translate-y-1 hover:scale-110 duration-300 hover:ring-0"
+                [src]="tmdbConfig.imagePath + movie.poster_path"
+              />
+              <app-movie-card [movie]="movie" [index]="$index"></app-movie-card>
+            </div>
+          </swiper-slide>
+
+          } @empty {
+          <h4>Loading...</h4>
+          }
+        </swiper-container>
+      </div>
+    </div>
+  </div>
+</div>
