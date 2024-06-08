@@ -1,11 +1,23 @@
-<div class="fixed top-0 left-0 right-0 bg-gray-950 z-[9999]">
-  <div class="grid grid-cols-4">
+<div
+  class="fixed top-0 left-0 right-0 bg-gray-950 z-[9999] max-lg:relative max-lg:w-full"
+>
+  <div class="grid grid-cols-4 max-lg:flex">
     <img
       (click)="onClickLogo()"
       [src]="logoUrl"
       alt="logo"
-      class="w-2/4 max-lg:w-full max-lg:p-0 max-lg:mt-4 p-7 hover:cursor-pointer"
+      class="w-2/4 max-lg:w-1/3 hover:cursor-pointer"
     />
     <app-dropdown-menu-user></app-dropdown-menu-user>
+    <div
+      class="hidden bg-slate-950 w-full h-full justify-center justify-items-center align-middle text-center text-white"
+    >
+      <div class="float-right p-10">
+        <button>Close</button>
+      </div>
+      <div>
+        <app-left-area></app-left-area>
+      </div>
+    </div>
   </div>
 </div>

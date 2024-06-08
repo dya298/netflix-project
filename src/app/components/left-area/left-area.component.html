@@ -1,4 +1,4 @@
-<div class="fixed mt-16 overflow-y-auto h-full w-[230px]">
+<div class="fixed mt-16 overflow-y-auto h-full w-[230px] max-lg:w-full">
   <p
     class="text-2xl font-semibold font-mono text-center text-white tracking-wide"
   >
@@ -7,7 +7,7 @@
   @for (genre of genres; track $index;) {
   <button
     (click)="onClickGenre(genre.id)"
-    class="text-lg font-semibold font-mono text-slate-500 tracking-wide hover:text-slate-200 flex p-4"
+    class="text-lg font-semibold font-mono text-slate-500 tracking-wide hover:text-slate-200 flex p-4 max-lg:text-center max-lg:w-full max-lg:block"
   >
     {{ genre.name }}
   </button>

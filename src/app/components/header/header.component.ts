@@ -1,3 +1,4 @@
+import { LeftAreaComponent } from './../left-area/left-area.component';
 import { Component, inject } from '@angular/core';
 import { LOGO_URL } from '../../constants/config';
 import { CommonModule } from '@angular/common';
@@ -7,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, DropdownMenuUserComponent],
+  imports: [CommonModule, DropdownMenuUserComponent, LeftAreaComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
 })

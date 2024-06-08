@@ -1,11 +1,11 @@
-<div class="bg-gray-950 w-full h-full absolute">
+<div class="bg-gray-950 w-full h-full absolute max-lg:overflow-x-hidden">
   <app-header></app-header>
-  <div class="grid grid-cols-8 mt-32 w-full h-full absolute max-lg:mt-16">
+  <div class="grid grid-cols-8 mt-32 w-full h-full absolute max-lg:mt-0">
     <div class="col-start-1 bg-gray-950 w-full">
-      <app-left-area></app-left-area>
+      <app-left-area class="max-lg:hidden"></app-left-area>
     </div>
     <div
-      class="col-start-2 col-end-9 bg-gray-900 mt-2 p-7 rounded-ss-[37px] max-lg:col-start-1 max-lg:rounded-none"
+      class="col-start-2 col-end-9 bg-gray-900 mt-2 p-7 rounded-ss-[37px] max-lg:col-start-1 max-lg:rounded-none max-lg:mt-0"
     >
       <router-outlet></router-outlet>
     </div>
