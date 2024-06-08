@@ -1,10 +1,12 @@
 <div class="bg-gray-950 w-full h-full absolute">
   <app-header></app-header>
-  <div class="grid grid-cols-8 mt-32 w-full h-full absolute">
+  <div class="grid grid-cols-8 mt-32 w-full h-full absolute max-lg:mt-16">
     <div class="col-start-1 bg-gray-950 w-full">
       <app-left-area></app-left-area>
     </div>
-    <div class="col-start-2 col-end-9 bg-gray-900 mt-2 p-7 rounded-ss-[37px]">
+    <div
+      class="col-start-2 col-end-9 bg-gray-900 mt-2 p-7 rounded-ss-[37px] max-lg:col-start-1 max-lg:rounded-none"
+    >
       <router-outlet></router-outlet>
     </div>
   </div>

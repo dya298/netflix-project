@@ -1,10 +1,10 @@
-<div class="fixed top-0 left-0 right-0 bg-gray-950 z-[9999]">
+<div class="fixed top-0 left-0 right-0 bg-gray-950 z-[9999] max-lg:w-2/5">
   <div class="grid grid-cols-4">
     <img
       (click)="onClickLogo()"
       [src]="logoUrl"
       alt="logo"
-      class="w-2/4 h-auto p-7 hover:cursor-pointer"
+      class="w-2/4 h-auto max-lg:w-full max-lg:pt-7 p-7 hover:cursor-pointer"
     />
     <app-dropdown-menu-user></app-dropdown-menu-user>
   </div>
