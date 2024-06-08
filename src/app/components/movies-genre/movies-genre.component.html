@@ -4,7 +4,10 @@
 <app-spinner *ngIf="isFirstLoad"></app-spinner>
 
 <ng-container *ngIf="!isFirstLoad">
-  <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+  <div
+    *ngIf="movies$ | async as movies"
+    class="grid gap-4 md:grid-cols-2 lg:grid-cols-5"
+  >
     @for (movie of movies; track movie.id ;let index = $index) {
     <app-movie-card [isDisplayImage]="isDisplayImage" [movie]="movie">
     </app-movie-card>

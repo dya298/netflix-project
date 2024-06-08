@@ -148,6 +148,8 @@ export class MovieService {
 
     if (casts.length < Common.MAX_STARTING) {
       casts = casts.splice(Common.VALUE_DEFAULT, casts.length);
+    } else {
+      casts = casts.splice(Common.MAX_STARTING);
     }
 
     for (let index = Common.VALUE_DEFAULT; index < casts.length; index++) {

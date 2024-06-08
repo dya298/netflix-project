@@ -125,6 +125,7 @@
           free-mode="true"
           observer="true"
           observe-parents="true"
+          *ngIf="similarMovies$ | async as similarMovies"
         >
           @for (movie of similarMovies; track $index) {
           <swiper-slide>

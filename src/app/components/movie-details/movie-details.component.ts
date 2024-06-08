@@ -50,7 +50,9 @@ export class MovieDetailsComponent {
   cast: Cast[] = [];
   crew!: Crew;
   totalCast: string = STRING_EMPTY;
-  similarMovies: Movie[] = [];
+
+  similarMovies$: Observable<Movie[]> | undefined;
+
   listUrlYoutube: any[] = [];
   isFinishLoad = true;
   bgDropDefault = BG_DEFAULT;
@@ -63,7 +65,9 @@ export class MovieDetailsComponent {
   ngOnInit() {
     this.movie$ = this._route.data.pipe(map((data) => data['movie_details']));
 
-    this.similarMovies = this._route.snapshot.data['similar_movie'];
+    this.similarMovies$ = this._route.data.pipe(
+      map((data) => data['similar_movie'])
+    );
 
     this._route.params.subscribe(async (params) => {
       this._movieService

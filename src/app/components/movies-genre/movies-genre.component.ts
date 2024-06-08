@@ -1,3 +1,4 @@
+import { Observable, map } from 'rxjs';
 import { STRING_EMPTY } from './../../constants/config';
 import { CommonModule } from '@angular/common';
 import { Movie } from './../../models/movie';
@@ -18,7 +19,7 @@ import { Common } from '../../constants/common-enum';
   styleUrl: './movies-genre.component.scss',
 })
 export class MoviesGenreComponent {
-  movies: Movie[] = [];
+  movies$: Observable<Movie[]> | undefined;
   genres: Genre[] = [];
 
   isLoading = false;
@@ -36,7 +37,9 @@ export class MoviesGenreComponent {
   ) {}
 
   ngOnInit() {
-    this.movies = this.route.snapshot.data['lazyloading_movie_genre'];
+    this.movies$ = this.route.data.pipe(
+      map((data) => data['lazyloading_movie_genre'])
+    );
 
     this.route.params.subscribe((params) => {
       this._genreService.LoadGenres().subscribe((result: any) => {
@@ -50,7 +53,7 @@ export class MoviesGenreComponent {
 
     this.isDisplayImage = true;
 
-    this.LoadMovieNextPages();
+    this.isFirstLoad = false;
 
     this.WindowScroll();
   }
@@ -64,10 +67,13 @@ export class MoviesGenreComponent {
         .subscribe(async (result: any) => {
           await new Promise((f) => setTimeout(f, Common.TIME_OUT));
           if (result.length) {
-            this.movies.push(...result);
+            this.movies$?.subscribe((data) => {
+              data.push(...result);
+            });
           } else {
             this.loadedAll = true;
           }
+
           this.isLoading = false;
           this.isFirstLoad = false;
         });
@@ -89,8 +95,9 @@ export class MoviesGenreComponent {
       document.documentElement.offsetHeight
     );
 
-    if (sbHeight + document.documentElement.scrollTop >= limitScrollPage) {
+    if (sbHeight + document.documentElement.scrollTop === limitScrollPage) {
       if (!this.loadedAll) {
+        console.log(456);
         this.page++;
         this.LoadMovieNextPages();
       }
