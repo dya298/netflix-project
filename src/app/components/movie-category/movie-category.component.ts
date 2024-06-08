@@ -3,13 +3,14 @@ import {
   Component,
   Input,
   ViewEncapsulation,
+  inject,
 } from '@angular/core';
 import { MovieCardComponent } from '../movie-card/movie-card.component';
-import { Movie } from '../../types/movie';
+import { Movie } from '../../models/movie';
 import SwiperCore from 'swiper';
 import { EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
 import { ActivatedRoute, Router } from '@angular/router';
-import { tmdbConfig } from '../../constants/config';
+import { STRING_EMPTY, tmdbConfig } from '../../constants/config';
 
 SwiperCore.use([EffectCoverflow, Pagination, Navigation]);
 
@@ -23,16 +24,20 @@ SwiperCore.use([EffectCoverflow, Pagination, Navigation]);
   encapsulation: ViewEncapsulation.None,
 })
 export class MovieCategoryComponent {
-  @Input() title = '';
-  @Input() movieList: Movie[] = [];
+  @Input() title = STRING_EMPTY;
+  @Input() movies: Movie[] = [];
 
   isDisplayImage!: boolean;
   tmdbConfig = tmdbConfig;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  _route = inject(ActivatedRoute);
+  _router = inject(Router);
 
   onClickMovie(index: number) {
     this.isDisplayImage = false;
-    this.router.navigate(['movies', index], { relativeTo: this.route.parent });
+
+    this._router.navigate(['movies', index], {
+      relativeTo: this._route.parent,
+    });
   }
 }

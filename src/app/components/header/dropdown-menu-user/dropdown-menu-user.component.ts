@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../../../modules/materials.module';
 import { LoginService } from '../../../services/login.service';
+import { IMAGE_DEFAULT_USER } from '../../../constants/config';
 
 @Component({
   selector: 'app-dropdown-menu-user',
@@ -13,11 +14,13 @@ import { LoginService } from '../../../services/login.service';
 })
 export class DropdownMenuUserComponent {
   isDisplayImage: boolean = false;
-  loginService = inject(LoginService);
   isHiddenPopupUserInfo: boolean = false;
+  imgUrlUser = IMAGE_DEFAULT_USER;
+  
+  _loginService = inject(LoginService);
 
   ngOnInit() {
-    if (this.loginService.isLoggedIn) {
+    if (this._loginService.IsLoggedIn) {
       this.isDisplayImage = true;
     } else {
       this.isDisplayImage = false;
@@ -27,6 +30,6 @@ export class DropdownMenuUserComponent {
     this.isHiddenPopupUserInfo = !this.isHiddenPopupUserInfo;
   }
   onLogout() {
-    this.loginService.LogoutUser();
+    this._loginService.LogoutUser();
   }
 }

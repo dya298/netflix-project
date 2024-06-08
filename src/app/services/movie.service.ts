@@ -1,119 +1,139 @@
-import { Movie } from './../types/movie';
+import { Movie } from './../models/movie';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map, of, shareReplay, tap } from 'rxjs';
-import { tmdbConfig } from '../constants/config';
-import { Genre } from '../types/genre';
+import { Observable, shareReplay, map } from 'rxjs';
+import { STRING_EMPTY, tmdbConfig } from '../constants/config';
+import { Cast } from '../models/cast';
+import { Common } from '../constants/common-enum';
+import { Key } from 'readline';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MovieService {
-  isDisplayImage: boolean = false;
-  newListGenres: Genre[] = [];
-  index: number = 0;
-  httpService = inject(HttpClient);
+  _httpService = inject(HttpClient);
+  _tmdbConfig = tmdbConfig;
 
-  getPopularMovies() {
-    const headers = this.getHeaders();
-    return this.httpService.get('https://api.themoviedb.org/3/movie/popular', {
+  LoadPopularMovies() {
+    const headers = this.GetHeaders();
+
+    return this._httpService.get(`${this._tmdbConfig.apiUrl}/movie/popular`, {
       headers: headers,
     });
   }
 
-  getMovieWithGenre(genreSeqNo: string, page: number = 1) {
-    const headers = this.getHeaders();
-    return this.httpService.get(
+  LazyLoadingMovieGenre(
+    genreId: string,
+    pageMovie: number = Common.DEFAULT_PAGE
+  ): Observable<Movie[]> {
+    const headers = this.GetHeaders();
+
+    return this._httpService
+      .get<Movie[]>(
+        `
+      ${this._tmdbConfig.apiUrl}/discover/movie`,
+        {
+          params: {
+            page: pageMovie,
+            with_genres: genreId,
+          },
+          headers: headers,
+        }
+      )
+      .pipe(
+        map((res: any) => res['results']),
+        shareReplay()
+      );
+  }
+
+  LoadMovieGenre(genreId: string, pageMovie: number = Common.DEFAULT_PAGE) {
+    const headers = this.GetHeaders();
+
+    return this._httpService.get(
       `
-      https://api.themoviedb.org/3/discover/movie`,
+      ${this._tmdbConfig.apiUrl}/discover/movie`,
       {
         params: {
-          page: page,
-          with_genres: genreSeqNo,
+          page: pageMovie,
+          with_genres: genreId,
         },
         headers: headers,
       }
     );
   }
 
-  getMovieDetails(movieSeqNo: string) {
-    const headers = this.getHeaders();
-    return this.httpService.get(
-      `https://api.themoviedb.org/3/movie/${movieSeqNo}`,
+  LoadDetailsMovie(movieId: string): Observable<Movie> {
+    const headers = this.GetHeaders();
+
+    return this._httpService
+      .get<Movie>(`${this._tmdbConfig.apiUrl}/movie/${movieId}`, {
+        headers: headers,
+      })
+      .pipe(shareReplay());
+  }
+
+  LoadCastingMovie(movieId: string) {
+    const headers = this.GetHeaders();
+
+    return this._httpService.get(
+      `${this._tmdbConfig.apiUrl}/movie/${movieId}/credits`,
       {
         headers: headers,
       }
     );
   }
 
-  getCastAndDirect(movieSeqNo: string) {
-    const headers = this.getHeaders();
-    return this.httpService.get(
-      `https://api.themoviedb.org/3/movie/${movieSeqNo}/credits`,
+  LoadKeysYoutubeMovie(movieId: string) {
+    const headers = this.GetHeaders();
+
+    return this._httpService.get(
+      `${this._tmdbConfig.apiUrl}/movie/${movieId}/videos`,
       {
         headers: headers,
       }
     );
   }
 
-  getKeyYbMovie(movieSeqNo: string) {
-    const headers = this.getHeaders();
-    return this.httpService.get(
-      `https://api.themoviedb.org/3/movie/${movieSeqNo}/videos`,
+  LoadSimilarMovies(movieId: string): Observable<Movie[]> {
+    const headers = this.GetHeaders();
+    return this._httpService
+      .get<Movie[]>(`${this._tmdbConfig.apiUrl}/movie/${movieId}/similar`, {
+        headers: headers,
+      })
+      .pipe(
+        map((res: any) => res['results']),
+        shareReplay()
+      );
+  }
+
+  LoadNowPlayingMovies() {
+    const headers = this.GetHeaders();
+
+    return this._httpService.get(
+      `${this._tmdbConfig.apiUrl}/movie/now_playing`,
       {
         headers: headers,
       }
     );
   }
 
-  getSimilarMovie(movieSeqNo: string) {
-    const headers = this.getHeaders();
-    return this.httpService.get(
-      `https://api.themoviedb.org/3/movie/${movieSeqNo}/similar`,
-      {
-        headers: headers,
-      }
-    );
-  }
+  LoadTopRatedMovies() {
+    const headers = this.GetHeaders();
 
-  getGenres() {
-    const headers = this.getHeaders();
-    return this.httpService.get(
-      'https://api.themoviedb.org/3/genre/movie/list',
-      {
-        headers: headers,
-      }
-    );
-  }
-
-  getNowPlayingMovies() {
-    const headers = this.getHeaders();
-    return this.httpService.get(
-      'https://api.themoviedb.org/3/movie/now_playing',
-      {
-        headers: headers,
-      }
-    );
-  }
-
-  getTopRatedMovies() {
-    const headers = this.getHeaders();
-    return this.httpService.get(
-      'https://api.themoviedb.org/3/movie/top_rated',
-      {
-        headers: headers,
-      }
-    );
-  }
-
-  getUpcomingMovies() {
-    const headers = this.getHeaders();
-    return this.httpService.get('https://api.themoviedb.org/3/movie/upcoming', {
+    return this._httpService.get(`${this._tmdbConfig.apiUrl}/movie/top_rated`, {
       headers: headers,
     });
   }
 
-  getHeaders() {
+  LoadUpcomingMovies() {
+    const headers = this.GetHeaders();
+
+    return this._httpService.get(`${this._tmdbConfig.apiUrl}/movie/upcoming`, {
+      headers: headers,
+    });
+  }
+
+  GetHeaders() {
     let headers = new HttpHeaders();
     headers = headers.append('accept', 'application/json');
     headers = headers.append(
@@ -123,106 +143,37 @@ export class MovieService {
     return headers;
   }
 
-  calculateIMDb(value: number) {
-    return Math.ceil(value);
+  TotalCasting(casts: Cast[]) {
+    let newTotalString = STRING_EMPTY;
+
+    if (casts.length < Common.MAX_STARTING) {
+      casts = casts.splice(Common.VALUE_DEFAULT, casts.length);
+    }
+
+    for (let index = Common.VALUE_DEFAULT; index < casts.length; index++) {
+      newTotalString += ' ' + casts[index].name + ',';
+    }
+
+    let totalCast = newTotalString.slice(
+      Common.VALUE_DEFAULT,
+      Common.VALUE_VALID
+    );
+
+    return totalCast;
   }
 
-  splitDate(value: string) {
+  ValidKeysYoutube(keys: Key[]) {
+    if (keys.length > Common.MAX_KEYS_YOUTUBE) {
+      keys = keys.slice(Common.VALUE_DEFAULT, Common.MAX_KEYS_YOUTUBE);
+    }
+    return keys;
+  }
+
+  SplitReleaseDate(value: string) {
     var splitDate = [];
     splitDate = value.split('-');
     return splitDate;
   }
-
-  // fetchItems(): Observable<Movie[]> {
-  //   // let moviesGenre$: Observable<Movie[]>;
-  //   // const movie: Movie = {
-  //   //   original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //   release_date: '2022',
-  //   //   vote_average: '9.2',
-  //   //   overview: '',
-  //   //   poster_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   // };
-  //   // moviesGenre$ = of([
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     release_date: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   //   {
-  //   //     original_title: 'The Spider Within: A Spider-Verse Story',
-  //   //     year: '2022',
-  //   //     rating: '9.2',
-  //   //     overview: '',
-  //   //     backdrop_path: 'https://swiperjs.com/demos/images/nature-5.jpg',
-  //   //   },
-  //   // ]);
-  //    return moviesGenre$;
-  // }
 
   constructor() {}
 }

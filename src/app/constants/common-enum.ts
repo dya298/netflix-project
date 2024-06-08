@@ -1,0 +1,14 @@
+export enum Title {
+  TITLE_ORIGINAL = 14,
+}
+
+export enum Common {
+  VALUE_VALID = -1,
+  VALUE_DEFAULT = 0,
+  DEFAULT_PAGE = 1,
+  BANNER_MOVIES = 7,
+  MAX_OVERVIEW = 150,
+  MAX_STARTING = 26,
+  MAX_KEYS_YOUTUBE = 7,
+  TIME_OUT = 1500,
+}

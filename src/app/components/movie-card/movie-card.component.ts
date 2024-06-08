@@ -6,12 +6,12 @@ import {
   ViewEncapsulation,
   inject,
 } from '@angular/core';
-import { Movie } from '../../types/movie';
+import { Movie } from '../../models/movie';
 import { tmdbConfig } from '../../constants/config';
 import { MaterialModule } from '../../modules/materials.module';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
-import { Title } from '../../constants/commonEnum';
+import { Common, Title } from '../../constants/common-enum';
 
 @Component({
   selector: 'app-movie-card',
@@ -24,23 +24,20 @@ import { Title } from '../../constants/commonEnum';
 })
 export class MovieCardComponent {
   @Input() movie!: Movie;
-  @Input() index: number = 0;
   @Input() isDisplayImage!: boolean;
-  enumTitleOriginal = Title.TitleOriginal;
+
+  enumTitleOriginal = Title.TITLE_ORIGINAL;
+  valueDefault = Common.VALUE_DEFAULT;
 
   tmdbConfig = tmdbConfig;
 
   movieService = inject(MovieService);
-
-  constructor(private route: ActivatedRoute, private router: Router) {}
-
-  ngOnInit() {
-    this.movie.vote_average = this.movieService.calculateIMDb(
-      this.movie.vote_average
-    );
-  }
+  _route = inject(ActivatedRoute);
+  _router = inject(Router);
 
   onClickMovie(index: number) {
-    this.router.navigate(['movies', index], { relativeTo: this.route.parent });
+    this._router.navigate(['movies', index], {
+      relativeTo: this._route.parent,
+    });
   }
 }

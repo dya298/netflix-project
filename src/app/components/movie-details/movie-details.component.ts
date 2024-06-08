@@ -1,3 +1,4 @@
+import { Observable, map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -6,17 +7,23 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MaterialModule } from '../../modules/materials.module';
 import { MovieService } from '../../services/movie.service';
-import { Movie } from '../../types/movie';
+import { Movie } from '../../models/movie';
 import { MovieCardComponent } from '../movie-card/movie-card.component';
 import { MovieCategoryComponent } from '../movie-category/movie-category.component';
 import { DomSanitizer } from '@angular/platform-browser';
-import { tmdbConfig } from '../../constants/config';
-import { Crew } from '../../types/crew';
-import { Cast } from '../../types/cast';
-import { Key } from '../../types/key';
+import {
+  BG_DEFAULT,
+  STRING_EMPTY,
+  tmdbConfig,
+  urlYoutube,
+} from '../../constants/config';
+import { Crew } from '../../models/crew';
+import { Cast } from '../../models/cast';
+import { SpinnerComponent } from '../spinner/spinner.component';
+import { Common } from '../../constants/common-enum';
 
 @Component({
   selector: 'app-movie-details',
@@ -26,6 +33,7 @@ import { Key } from '../../types/key';
     MovieCategoryComponent,
     MaterialModule,
     MovieCardComponent,
+    SpinnerComponent,
   ],
   templateUrl: './movie-details.component.html',
   styleUrl: './movie-details.component.scss',
@@ -35,93 +43,66 @@ import { Key } from '../../types/key';
 export class MovieDetailsComponent {
   @Input() isDisplayImage!: boolean;
 
+  movie$: Observable<Movie> | undefined;
+
   tmdbConfig = tmdbConfig;
   movie!: Movie;
   cast: Cast[] = [];
   crew!: Crew;
-  totalCast: string = '';
-  keysYoutube: Key[] = [];
+  totalCast: string = STRING_EMPTY;
   similarMovies: Movie[] = [];
   listUrlYoutube: any[] = [];
   isFinishLoad = true;
+  bgDropDefault = BG_DEFAULT;
 
-  movieService = inject(MovieService);
-  private sanitizer = inject(DomSanitizer);
-
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  _movieService = inject(MovieService);
+  _sanitizer = inject(DomSanitizer);
+  _route = inject(ActivatedRoute);
+  _router = inject(Router);
 
   ngOnInit() {
-    this.isFinishLoad = true;
-    this.route.params.subscribe(async (res) => {
-      await new Promise((f) => setTimeout(f, 1500));
-      this.route.params.subscribe((params) => {
-        this.movieService
-          .getMovieDetails(params['movieSeqNo'])
-          .subscribe((result: any) => {
-            this.movie = result;
-            this.movie.release_date = this.movieService.splitDate(
-              result.release_date
-            )[0];
-            this.movie.vote_average = this.movieService.calculateIMDb(
-              result.vote_average
-            );
-          });
+    this.movie$ = this._route.data.pipe(map((data) => data['movie_details']));
 
-        this.movieService
-          .getCastAndDirect(params['movieSeqNo'])
-          .subscribe((result: any) => {
-            this.cast = result.cast;
-            this.crew = result.crew[0];
+    this.similarMovies = this._route.snapshot.data['similar_movie'];
 
-            let newTotalString = '';
-            if (result.cast.length > 25) {
-              for (let index = 0; index < 25; index++) {
-                newTotalString += ' ' + this.cast[index].name + ',';
-              }
-            } else if (result.cast.length < 10) {
-              for (let index = 0; index < 25; index++) {
-                newTotalString += ' T.B.D' + ',';
-              }
-            } else {
-              for (let index = 0; index < result.cast.length; index++) {
-                newTotalString += ' ' + this.cast[index].name + ',';
-              }
-            }
-            this.totalCast = newTotalString.slice(0, -1);
-          });
+    this._route.params.subscribe(async (params) => {
+      this._movieService
+        .LoadCastingMovie(params['movieId'])
+        .subscribe((result: any) => {
+          this.cast = result.cast;
 
-        this.movieService
-          .getKeyYbMovie(params['movieSeqNo'])
-          .subscribe((result: any) => {
-            this.keysYoutube = result.results;
-            if (this.keysYoutube.length > 7) {
-              this.keysYoutube = this.keysYoutube.slice(0, 7);
-            }
+          this.crew = result.crew[Common.VALUE_DEFAULT];
 
-            for (let index = 0; index < this.keysYoutube.length; index++) {
-              this.listUrlYoutube[index] =
-                this.sanitizer.bypassSecurityTrustResourceUrl(
-                  `https://youtube.com/embed/${this.keysYoutube[index].key}`
-                );
-            }
-          });
+          this.totalCast = this._movieService.TotalCasting(this.cast);
+        });
 
-        this.movieService
-          .getSimilarMovie(params['movieSeqNo'])
-          .subscribe((result: any) => {
-            this.similarMovies = result.results;
-          });
-      });
+      this._movieService
+        .LoadKeysYoutubeMovie(params['movieId'])
+        .subscribe((result: any) => {
+          var newKeys: any = this._movieService.ValidKeysYoutube(
+            result.results
+          );
+
+          for (
+            let index = Common.VALUE_DEFAULT;
+            index < newKeys.length;
+            index++
+          ) {
+            this.listUrlYoutube[index] =
+              this._sanitizer.bypassSecurityTrustResourceUrl(
+                `${urlYoutube}${newKeys[index].key}`
+              );
+          }
+        });
+
       this.isFinishLoad = false;
     });
   }
 
-  ngOnChanges() {
-    this.isFinishLoad = false;
-  }
-
-  onClickMovie(index: number) {
-    this.router.navigate(['movies', index], { relativeTo: this.route.parent });
+  onClickSimilarMovie(index: number) {
+    this._router.navigate(['movies', index], {
+      relativeTo: this._route.parent,
+    });
     this.isFinishLoad = true;
   }
 }

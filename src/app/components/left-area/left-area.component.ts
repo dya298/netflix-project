@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Genre } from '../../types/genre';
+import { Genre } from '../../models/genre';
 import { MovieService } from '../../services/movie.service';
+import { GenreService } from '../../services/genre.service';
 
 @Component({
   selector: 'app-left-area',
@@ -12,19 +13,22 @@ import { MovieService } from '../../services/movie.service';
   styleUrl: './left-area.component.scss',
 })
 export class LeftAreaComponent {
-  listGenres: Genre[] = [];
+  genres: Genre[] = [];
+
   movieService = inject(MovieService);
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  _genreService = inject(GenreService);
+  _route = inject(ActivatedRoute);
+  _router = inject(Router);
 
   ngOnInit() {
-    this.movieService.getGenres().subscribe((result: any) => {
-      this.listGenres = result.genres;
+    this._genreService.LoadGenres().subscribe((result: any) => {
+      this.genres = result.genres;
     });
   }
 
   onClickGenre(index: number) {
-    this.router.navigate(['genre', index], {
-      relativeTo: this.route,
+    this._router.navigate(['genre', index], {
+      relativeTo: this._route,
     });
   }
 }

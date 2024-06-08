@@ -1,21 +1,20 @@
 <div
-  class="h-screen"
+  class="h-screen bg-cover"
   [ngStyle]="{
     'background-image': 'url(' + bgImgUrl + ')',
-    'background-size': 'cover'
   }"
 >
   <app-header></app-header>
-  <div class="login-container">
-    <div class="login-card">
-      <h2 class="heading">Sign In</h2>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="form-field">
+  <div class="flex justify-center">
+    <div class="mt-64 bg-black w-96 p-12 rounded-xl bg-opacity-80">
+      <h2 class="font-bold text-white text-2xl mb-4">Sign In</h2>
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+        <div class="mb-4">
           <input
             type="text"
             name="email"
             formControlName="email"
-            class="input"
+            class="w-full bg-slate-700 p-3 rounded text-white"
             placeholder="Email or phone number"
           />
           @if (submitted && f['email'].errors) {
@@ -28,11 +27,11 @@
           </div>
           }
         </div>
-        <div class="form-field">
+        <div class="mb-4">
           <input
             type="password"
             name="password"
-            class="input"
+            class="w-full bg-slate-700 p-3 rounded text-white"
             formControlName="password"
             placeholder="Password"
           />
@@ -48,8 +47,12 @@
           </div>
           }
         </div>
-        <div class="action-field">
-          <button class="login-btn">Sign In</button>
+        <div class="flex justify-center align-middle text-center">
+          <button
+            class="bg-red-800 p-1.5 w-full text-white font-bold rounded text-lg"
+          >
+            Sign In
+          </button>
         </div>
       </form>
     </div>

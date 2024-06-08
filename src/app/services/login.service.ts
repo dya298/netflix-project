@@ -7,14 +7,14 @@ export class LoginService {
   constructor() {}
 
   LoginUser(email: string, password: string) {
-    localStorage.setItem('token', Math.random() + '');
+    localStorage.setItem('token', `${email} + ${password}`);
   }
 
   LogoutUser() {
     localStorage.removeItem('token');
   }
 
-  get isLoggedIn() {
+  get IsLoggedIn() {
     if (typeof localStorage !== 'undefined') {
       if (localStorage.getItem('token')) {
         return true;

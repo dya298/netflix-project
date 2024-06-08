@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { MovieService } from '../services/movie.service';
-import { CommonModule } from '@angular/common';
-import { MaterialModule } from './materials.module';
 import { MovieDetailsComponent } from '../components/movie-details/movie-details.component';
+import { MoviesGenreComponent } from '../components/movies-genre/movies-genre.component';
 
 @NgModule({
   declarations: [],
-  imports: [MovieDetailsComponent],
+  imports: [MovieDetailsComponent, MoviesGenreComponent],
   providers: [MovieService],
 })
 export class MovieModule {}

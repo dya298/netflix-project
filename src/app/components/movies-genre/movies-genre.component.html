@@ -1,20 +1,14 @@
 <p class="text-5xl font-semibold text-white tracking-wide">
   All {{ labelGenre }} Movies
 </p>
-<div *ngIf="isFirstLoad" class="spinner-container">
-  <span class="spinner"></span>
-</div>
+<app-spinner *ngIf="isFirstLoad"></app-spinner>
+
 <ng-container *ngIf="!isFirstLoad">
-  <div class="grid">
-    <app-movie-card
-      *ngFor="let movie of movies; index as i"
-      [isDisplayImage]="isDisplayImage"
-      [index]="i"
-      [movie]="movie"
-    >
+  <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+    @for (movie of movies; track movie.id ;let index = $index) {
+    <app-movie-card [isDisplayImage]="isDisplayImage" [movie]="movie">
     </app-movie-card>
+    }
   </div>
-  <div *ngIf="isLoading" class="spinner-container">
-    <span class="spinner"></span>
-  </div>
+  <app-spinner *ngIf="isLoading"></app-spinner>
 </ng-container>

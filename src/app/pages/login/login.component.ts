@@ -23,22 +23,22 @@ import { HeaderComponent } from '../../components/header/header.component';
 })
 export class LoginComponent {
   bgImgUrl = BG_IMAGE_URL;
+  email!: string;
+  password!: string;
+  submitted = false;
 
-  form: FormGroup = new FormGroup({
+  formGroup: FormGroup = new FormGroup({
     email: new FormControl(''),
     password: new FormControl(''),
   });
-  submitted = false;
 
-  email!: string;
-  password!: string;
+  _loginService = inject(LoginService);
+  _router = inject(Router);
 
-  LoginService = inject(LoginService);
-  Router = inject(Router);
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit() {
-    this.form = this.formBuilder.group({
+    this.formGroup = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
@@ -49,23 +49,24 @@ export class LoginComponent {
         ],
       ],
     });
-    if (this.LoginService.isLoggedIn) {
-      this.Router.navigateByUrl('/browse');
+    if (this._loginService.IsLoggedIn) {
+      this._router.navigateByUrl('/netflix');
     }
   }
 
   onSubmit() {
     this.submitted = true;
 
-    if (this.form.invalid) {
+    if (this.formGroup.invalid) {
       return;
     }
 
-    this.LoginService.LoginUser(this.email, this.password);
-    this.Router.navigateByUrl('/browse');
+    this._loginService.LoginUser(this.email, this.password);
+
+    this._router.navigateByUrl('/netflix');
   }
 
   get f(): { [key: string]: AbstractControl } {
-    return this.form.controls;
+    return this.formGroup.controls;
   }
 }

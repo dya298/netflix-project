@@ -1,63 +1,70 @@
+import { STRING_EMPTY } from './../../constants/config';
 import { CommonModule } from '@angular/common';
-import { Movie } from './../../types/movie';
-import { Component } from '@angular/core';
+import { Movie } from './../../models/movie';
+import { Component, inject } from '@angular/core';
 import { MovieService } from '../../services/movie.service';
 import { MovieCardComponent } from '../movie-card/movie-card.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Genre } from '../../types/genre';
+import { ActivatedRoute } from '@angular/router';
+import { Genre } from '../../models/genre';
+import { GenreService } from '../../services/genre.service';
+import { SpinnerComponent } from '../spinner/spinner.component';
+import { Common } from '../../constants/common-enum';
 
 @Component({
   selector: 'app-movies-genre',
   standalone: true,
-  imports: [CommonModule, MovieCardComponent],
+  imports: [CommonModule, MovieCardComponent, SpinnerComponent],
   templateUrl: './movies-genre.component.html',
   styleUrl: './movies-genre.component.scss',
 })
 export class MoviesGenreComponent {
   movies: Movie[] = [];
   genres: Genre[] = [];
+
   isLoading = false;
   loadedAll = false;
   isFirstLoad = true;
   isDisplayImage!: boolean;
-  labelGenre: string = '';
-  page: number = 1;
+  labelGenre: string = STRING_EMPTY;
+  page: number = Common.DEFAULT_PAGE;
+
+  _genreService = inject(GenreService);
 
   constructor(
     private movieService: MovieService,
     private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.movies = this.route.snapshot.data['lazyloading_movie_genre'];
+
     this.route.params.subscribe((params) => {
-      this.movieService
-        .getMovieWithGenre(params['genreSeqNo'], this.page)
-        .subscribe((result: any) => {
-          this.movies = result.results;
-        });
-      this.movieService.getGenres().subscribe((result: any) => {
+      this._genreService.LoadGenres().subscribe((result: any) => {
         this.genres = result.genres;
         this.labelGenre =
           this.genres[
-            this.genres.findIndex((item) => item.id == params['genreSeqNo'])
+            this.genres.findIndex((item) => item.id == params['genreId'])
           ].name;
       });
     });
 
     this.isDisplayImage = true;
-    this.getMovieNextPages();
+
+    this.LoadMovieNextPages();
+
     this.WindowScroll();
   }
 
-  getMovieNextPages(): void {
+  LoadMovieNextPages() {
     this.isLoading = true;
+
     this.route.params.subscribe((params) => {
       this.movieService
-        .getMovieWithGenre(params['genreSeqNo'], this.page)
+        .LazyLoadingMovieGenre(params['genreId'], this.page)
         .subscribe(async (result: any) => {
-          await new Promise((f) => setTimeout(f, 1500));
-          if (result.results.length) {
-            this.movies.push(...result.results);
+          await new Promise((f) => setTimeout(f, Common.TIME_OUT));
+          if (result.length) {
+            this.movies.push(...result);
           } else {
             this.loadedAll = true;
           }
@@ -68,13 +75,13 @@ export class MoviesGenreComponent {
   }
 
   WindowScroll() {
-    window.onscroll = () => this.DetectBottom();
+    window.onscroll = () => this.DetectScrollBottom();
   }
 
-  DetectBottom(): void {
+  DetectScrollBottom() {
     var sbHeight =
       window.innerHeight * (window.innerHeight / document.body.offsetHeight);
-    var limit = Math.max(
+    var limitScrollPage = Math.max(
       document.body.scrollHeight,
       document.body.offsetHeight,
       document.documentElement.clientHeight,
@@ -82,10 +89,10 @@ export class MoviesGenreComponent {
       document.documentElement.offsetHeight
     );
 
-    if (sbHeight + document.documentElement.scrollTop >= limit) {
+    if (sbHeight + document.documentElement.scrollTop >= limitScrollPage) {
       if (!this.loadedAll) {
         this.page++;
-        this.getMovieNextPages();
+        this.LoadMovieNextPages();
       }
     }
   }

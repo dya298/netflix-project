@@ -5,10 +5,7 @@
         class="grid col-start-4 rounded-full overflow-hidden h-11 w-11 border-2 border-red-900 float-right absolute right-10"
         (click)="onClickToggleUserInfo()"
       >
-        <img
-          class="h-full w-full object-cover"
-          src="https://mockprojectdotnet.s3.amazonaws.com/alexander-hipp-iEEBWgY_6lA-unsplash.jpg"
-        />
+        <img class="h-full w-full object-cover" [src]="imgUrlUser" />
       </button>
       <div
         class="grid p-3 col-start-3 mt-12 w-55 bg-gray-800 bg-opacity-80 rounded-lg shadow-xl absolute right-10"

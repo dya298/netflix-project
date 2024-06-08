@@ -6,12 +6,11 @@ import SwiperCore from 'swiper';
 import { EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
 import { LeftAreaComponent } from '../../components/left-area/left-area.component';
 import { RouterOutlet } from '@angular/router';
-import { MovieService } from '../../services/movie.service';
 
 SwiperCore.use([EffectCoverflow, Pagination, Navigation]);
 
 @Component({
-  selector: 'app-browse',
+  selector: 'app-netflix',
   standalone: true,
   imports: [
     CommonModule,
@@ -20,7 +19,7 @@ SwiperCore.use([EffectCoverflow, Pagination, Navigation]);
     LeftAreaComponent,
     RouterOutlet,
   ],
-  templateUrl: './browse.component.html',
-  styleUrl: './browse.component.scss',
+  templateUrl: './netflix.component.html',
+  styleUrl: './netflix.component.scss',
 })
-export class BrowseComponent {}
+export class NetflixComponent {}
