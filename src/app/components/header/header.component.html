@@ -1,5 +1,5 @@
 <div
-  class="fixed top-0 left-0 right-0 bg-gray-950 z-[9999] max-lg:relative max-lg:w-full"
+  class="fixed top-0 left-0 right-0 bg-gray-950 z-[9999] max-lg:fixed max-lg:w-full"
 >
   <div class="grid grid-cols-4 max-lg:flex">
     <img
@@ -8,12 +8,22 @@
       alt="logo"
       class="w-2/4 max-lg:w-1/3 hover:cursor-pointer"
     />
-    <app-dropdown-menu-user></app-dropdown-menu-user>
+    <ng-template [ngIf]="isDisplayImage">
+      <app-dropdown-menu-user></app-dropdown-menu-user>
+      <mat-icon
+        (click)="onTogglePopupGenre()"
+        fontIcon="menu"
+        class="absolute right-10 mt-4 hidden max-lg: max-lg:block text-white"
+      >
+        Menu
+      </mat-icon>
+    </ng-template>
     <div
-      class="hidden bg-slate-950 w-full h-full justify-center justify-items-center align-middle text-center text-white"
+      class="fixed bg-slate-950 w-full h-full justify-center justify-items-center align-middle text-center text-white"
+      [ngClass]="isTogglePopupGenre ? 'active' : 'hidden'"
     >
-      <div class="float-right p-10">
-        <button>Close</button>
+      <div class="float-right p-4 mr-8">
+        <mat-icon (click)="onTogglePopupGenre()" fontIcon="close"></mat-icon>
       </div>
       <div>
         <app-left-area></app-left-area>

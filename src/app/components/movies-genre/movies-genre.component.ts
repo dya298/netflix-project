@@ -97,7 +97,6 @@ export class MoviesGenreComponent {
 
     if (sbHeight + document.documentElement.scrollTop === limitScrollPage) {
       if (!this.loadedAll) {
-        console.log(456);
         this.page++;
         this.LoadMovieNextPages();
       }

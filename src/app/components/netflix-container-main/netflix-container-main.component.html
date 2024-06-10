@@ -1,13 +1,25 @@
 <div class="opacity-65">
+  @if (innerWidth <= 1024) {
   <img
-    class="rounded-[37px] bg-cover absolute w-5/6 h-3/5"
+    class="absolute rounded-none w-full h-3/5 bg-cover"
+    [src]="tmdbConfig.imagePath + posterPath"
+    alt="banner-img"
+  />
+  } @else {
+  <img
+    class="rounded-[37px] bg-cover absolute w-5/6 h-3/5 max-lg:rounded-none max-lg:w-full"
     [src]="tmdbConfig.bg_path + backDropPath"
     alt="banner-img"
   />
+  } >
 </div>
 
-<div class="absolute flex flex-col pl-[5rem] top-40 z-[9998] w-5/12">
-  <p class="text-6xl font-semibold text-white tracking-wide">
+<div
+  class="absolute flex flex-col pl-[5rem] top-40 z-[9998] w-5/12 max-lg:w-full max-lg:p-3 max-lg:top-52"
+>
+  <p
+    class="text-6xl font-semibold text-white tracking-wide max-lg:text-xl max-lg:uppercase"
+  >
     {{ originalTitle }}
   </p>
   <div class="flex text-lg">
@@ -20,7 +32,6 @@
       </p>
     </div>
   </div>
-
   @if(overView.length > maxOverview) {
   <p class="text-lg font-semibold font-mono text-gray-400">
     {{ overView.substring(valueDefault, maxOverview) }}...
@@ -38,11 +49,13 @@
       color="warn"
     >
       <mat-icon>play_circle</mat-icon>
-      Watch Trailers Now
+      {{ innerWidth <= 1024 ? "Trailers" : "Watch Trails Now" }}
     </button>
   </div>
 </div>
-<div class="relative flex flex-col pl-[60rem] z-[9997] top-56">
+<div
+  class="relative flex flex-col pl-[60rem] z-[9996] top-56 max-lg:p-0 max-lg:mt-24"
+>
   <swiper-container
     slide-to-clicked-slide="true"
     pagination="false"
@@ -58,7 +71,7 @@
     class="pb-[50px] pt-[50px] w-full"
   >
     @for (movie of moviesBanner; track $index) {
-    <swiper-slide class="bg-center bg-cover w-52 h-64">
+    <swiper-slide class="bg-cover w-52 h-64 max-lg:w-32 max-lg:h-40">
       <img
         (click)="onChangeBanner(movie)"
         class="rounded-xl w-full block"
@@ -70,22 +83,20 @@
 </div>
 
 <div class="mt-64">
-  <div class="movie-categories">
-    <app-movie-category
-      [title]="'Trending Movies'"
-      [movies]="popularMovie"
-    ></app-movie-category>
-    <app-movie-category
-      [title]="'Top rated'"
-      [movies]="topRatedMovie"
-    ></app-movie-category>
-    <app-movie-category
-      [title]="'Upcoming'"
-      [movies]="upComingMovie"
-    ></app-movie-category>
-    <app-movie-category
-      [title]="'Now Playing'"
-      [movies]="nowPlayingMovie"
-    ></app-movie-category>
-  </div>
+  <app-movie-category
+    [title]="'Trending Movies'"
+    [movies]="popularMovie"
+  ></app-movie-category>
+  <app-movie-category
+    [title]="'Top rated'"
+    [movies]="topRatedMovie"
+  ></app-movie-category>
+  <app-movie-category
+    [title]="'Upcoming'"
+    [movies]="upComingMovie"
+  ></app-movie-category>
+  <app-movie-category
+    [title]="'Now Playing'"
+    [movies]="nowPlayingMovie"
+  ></app-movie-category>
 </div>

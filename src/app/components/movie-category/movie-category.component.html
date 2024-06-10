@@ -1,4 +1,4 @@
-<div class="mt-7">
+<div class="mt-7 max-lg:mt-0">
   <p class="text-white font-semibold mb-2 text-3xl font-mono tracking-wide">
     {{ title }}
   </p>
@@ -6,18 +6,19 @@
     <swiper-container
       navigation="true"
       mousewheel="true"
-      slides-per-view="7"
+      slides-per-view="peerMovie"
       space-between="0"
       free-mode="true"
       observer="true"
       observe-parents="true"
+      [breakpoints]="breakpoints"
     >
       @for (movie of movies; track $index) {
-      <swiper-slide class="h-[400px]">
-        <div class="relative pt-4 pl-3 pr-3">
+      <swiper-slide class="h-[400px] max-lg:h-96">
+        <div class="relative pt-4 pl-3 pr-3 max-lg:pl-2 max-lg:pr-2">
           <img
             (click)="onClickMovie(movie.id)"
-            class="rounded-3xl hover:cursor-pointer hover:-translate-y-1 hover:scale-110 duration-300 hover:ring-0"
+            class="rounded-3xl max-lg:rounded-xl hover:cursor-pointer hover:-translate-y-1 hover:scale-110 duration-300 hover:ring-0"
             [src]="tmdbConfig.imagePath + movie.poster_path"
           />
           <app-movie-card

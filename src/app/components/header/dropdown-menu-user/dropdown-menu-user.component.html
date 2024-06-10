@@ -1,61 +1,58 @@
-<div class="grid grid-cols-subgrid gap-4 col-span-3">
-  <ng-template [ngIf]="isDisplayImage">
-    <div class="grid col-start-2 grid-cols-4 mt-3 p-7 max-lg:p-0 max-lg:mt-2">
-      <button
-        class="grid col-start-4 rounded-full overflow-hidden h-11 w-11 border-2 border-red-900 float-right absolute right-10"
-        (click)="onClickToggleUserInfo()"
-      >
-        <img class="h-full w-full object-cover" [src]="imgUrlUser" />
-      </button>
-      <button class="col-start-4 hidden max-lg:grid text-white">Menu</button>
+<div class="grid grid-cols-subgrid gap-4 col-span-3 max-lg:pl-5">
+  <div class="grid col-start-4 grid-cols-4 mt-3 p-7 max-lg:p-0 max-lg:mt-2">
+    <button
+      class="grid col-start-2 rounded-full overflow-hidden h-11 w-11 border-2 border-red-900 float-right absolute right-10 max-lg:right-20"
+      (click)="onClickToggleUserInfo()"
+    >
+      <img class="h-full w-full object-cover" [src]="imgUrlUser" />
+    </button>
 
-      <div
-        class="grid p-3 col-start-3 mt-12 w-55 bg-gray-800 bg-opacity-80 rounded-lg shadow-xl absolute right-10"
-        [ngClass]="isHiddenPopupUserInfo ? 'active' : 'hidden'"
+    <div
+      class="grid p-3 col-start-3 mt-12 w-55 bg-gray-800 bg-opacity-80 rounded-lg shadow-xl absolute right-10"
+      [ngClass]="isHiddenPopupUserInfo ? 'active' : 'hidden'"
+    >
+      <a
+        href="#"
+        class="flex px-4 py-2 text-white hover:bg-red-900 hover:text-white hover:rounded-lg"
       >
-        <a
-          href="#"
-          class="flex px-4 py-2 text-white hover:bg-red-900 hover:text-white hover:rounded-lg"
-        >
-          <mat-icon
-            class="mr-2.5"
-            aria-hidden="false"
-            fontIcon="account_circle"
-          ></mat-icon>
-          <span class="mt-1">Profile</span>
-        </a>
-        <a
-          href="#"
-          class="flex px-4 py-2 text-white hover:bg-red-900 hover:text-white hover:rounded-lg"
-          ><mat-icon
-            class="mr-2.5"
-            aria-hidden="false"
-            fontIcon="settings"
-          ></mat-icon>
-          <span class="mt-1">Setting & Privacy</span></a
-        >
-        <a
-          href="#"
-          class="flex px-4 py-2 text-white hover:bg-red-900 hover:text-white hover:rounded-lg"
-          ><mat-icon
-            class="mr-2.5"
-            aria-hidden="false"
-            fontIcon="help"
-          ></mat-icon>
-          <span class="mt-1">Support</span></a
-        >
-        <a
-          href="#"
-          (click)="onLogout()"
-          class="flex px-4 py-2 text-white hover:bg-red-900 hover:text-white hover:rounded-lg"
-          ><mat-icon
-            class="mr-2.5"
-            aria-hidden="false"
-            fontIcon="logout"
-          ></mat-icon>
-          <span class="mt-1">Sign out</span></a
-        >
-      </div>
+        <mat-icon
+          class="mr-2.5"
+          aria-hidden="false"
+          fontIcon="account_circle"
+        ></mat-icon>
+        <span class="mt-1">Profile</span>
+      </a>
+      <a
+        href="#"
+        class="flex px-4 py-2 text-white hover:bg-red-900 hover:text-white hover:rounded-lg"
+        ><mat-icon
+          class="mr-2.5"
+          aria-hidden="false"
+          fontIcon="settings"
+        ></mat-icon>
+        <span class="mt-1">Setting & Privacy</span></a
+      >
+      <a
+        href="#"
+        class="flex px-4 py-2 text-white hover:bg-red-900 hover:text-white hover:rounded-lg"
+        ><mat-icon
+          class="mr-2.5"
+          aria-hidden="false"
+          fontIcon="help"
+        ></mat-icon>
+        <span class="mt-1">Support</span></a
+      >
+      <a
+        href="#"
+        (click)="onLogout()"
+        class="flex px-4 py-2 text-white hover:bg-red-900 hover:text-white hover:rounded-lg"
+        ><mat-icon
+          class="mr-2.5"
+          aria-hidden="false"
+          fontIcon="logout"
+        ></mat-icon>
+        <span class="mt-1">Sign out</span></a
+      >
     </div>
-  </ng-template>
+  </div>
 </div>

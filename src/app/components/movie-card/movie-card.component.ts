@@ -28,6 +28,8 @@ export class MovieCardComponent {
 
   enumTitleOriginal = Title.TITLE_ORIGINAL;
   valueDefault = Common.VALUE_DEFAULT;
+  defaultPage = Common.DEFAULT_PAGE;
+  subString4 = Common.SUBSTRING_4;
 
   tmdbConfig = tmdbConfig;
 

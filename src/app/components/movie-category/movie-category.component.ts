@@ -11,6 +11,7 @@ import SwiperCore from 'swiper';
 import { EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
 import { ActivatedRoute, Router } from '@angular/router';
 import { STRING_EMPTY, tmdbConfig } from '../../constants/config';
+import { Common } from '../../constants/common-enum';
 
 SwiperCore.use([EffectCoverflow, Pagination, Navigation]);
 
@@ -28,10 +29,29 @@ export class MovieCategoryComponent {
   @Input() movies: Movie[] = [];
 
   isDisplayImage!: boolean;
+  peerMovie: number = Common.PEER_IMAGE_7;
   tmdbConfig = tmdbConfig;
 
   _route = inject(ActivatedRoute);
   _router = inject(Router);
+
+  breakpoints = {
+    330: {
+      slidesPerView: Common.PEER_IMAGE_3,
+    },
+    870: {
+      slidesPerView: Common.PEER_IMAGE_5,
+    },
+    1200: {
+      slidesPerView: Common.PEER_IMAGE_7,
+    },
+  };
+
+  constructor() {
+    if (window.innerWidth <= Common.SIZE_LG) {
+      this.peerMovie = Common.PEER_IMAGE_3;
+    }
+  }
 
   onClickMovie(index: number) {
     this.isDisplayImage = false;

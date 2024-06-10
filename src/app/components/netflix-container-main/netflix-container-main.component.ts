@@ -9,7 +9,7 @@ import { MaterialModule } from '../../modules/materials.module';
 import { MovieCategoryComponent } from '../movie-category/movie-category.component';
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../models/movie';
-import { IMDB, tmdbConfig } from '../../constants/config';
+import { IMDB, STRING_EMPTY, tmdbConfig } from '../../constants/config';
 import SwiperCore from 'swiper';
 import { EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -34,15 +34,17 @@ export class NetflixContainerMainComponent {
   upComingMovie: Movie[] = [];
   moviesBanner: Movie[] = [];
 
+  innerWidth: number = Common.VALUE_DEFAULT;
+
   bannerMovie!: Movie;
 
-  backDropPath: string = '';
-  movieId: number = 0;
-  originalTitle: string = '';
-  overView: string = '';
-  posterPath: string = '';
-  voteAverage: string = '';
-  releaseDate: string = '';
+  backDropPath: string = STRING_EMPTY;
+  movieId: number = Common.VALUE_DEFAULT;
+  originalTitle: string = STRING_EMPTY;
+  overView: string = STRING_EMPTY;
+  posterPath: string = STRING_EMPTY;
+  voteAverage: string = STRING_EMPTY;
+  releaseDate: string = STRING_EMPTY;
   stringIMDb: string = IMDB;
   valueDefault = Common.VALUE_DEFAULT;
   maxOverview = Common.MAX_OVERVIEW;
@@ -52,6 +54,8 @@ export class NetflixContainerMainComponent {
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
+    this.innerWidth = window.innerWidth;
+
     this._movieService.LoadPopularMovies().subscribe((result: any) => {
       this.popularMovie = result.results;
 
@@ -60,7 +64,7 @@ export class NetflixContainerMainComponent {
         Common.BANNER_MOVIES
       );
 
-      this.onChangeBanner(this.moviesBanner[Common.DEFAULT_PAGE]);
+      this.onChangeBanner(this.moviesBanner[Common.VALUE_DEFAULT]);
     });
 
     this._movieService.LoadNowPlayingMovies().subscribe((result: any) => {
@@ -85,12 +89,17 @@ export class NetflixContainerMainComponent {
   onChangeBanner(movie: Movie) {
     this.backDropPath = movie.backdrop_path;
     this.originalTitle = movie.original_title;
-    this.overView = movie.overview;
+    if (this.innerWidth <= Common.SIZE_LG) {
+      this.overView = STRING_EMPTY;
+    } else {
+      this.overView = movie.overview;
+    }
+
     this.posterPath = movie.poster_path;
     this.voteAverage = movie.vote_average.toFixed(Common.DEFAULT_PAGE);
-    this.releaseDate = this._movieService.SplitReleaseDate(
-      movie.release_date
-    )[0];
+    this.releaseDate = this._movieService.SplitReleaseDate(movie.release_date)[
+      Common.VALUE_DEFAULT
+    ];
     this.movieId = movie.id;
   }
 }

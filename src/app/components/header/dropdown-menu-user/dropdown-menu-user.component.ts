@@ -13,19 +13,11 @@ import { IMAGE_DEFAULT_USER } from '../../../constants/config';
   styleUrl: './dropdown-menu-user.component.scss',
 })
 export class DropdownMenuUserComponent {
-  isDisplayImage: boolean = false;
   isHiddenPopupUserInfo: boolean = false;
   imgUrlUser = IMAGE_DEFAULT_USER;
-  
+
   _loginService = inject(LoginService);
 
-  ngOnInit() {
-    if (this._loginService.IsLoggedIn) {
-      this.isDisplayImage = true;
-    } else {
-      this.isDisplayImage = false;
-    }
-  }
   onClickToggleUserInfo() {
     this.isHiddenPopupUserInfo = !this.isHiddenPopupUserInfo;
   }
